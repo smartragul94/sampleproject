@@ -6,9 +6,16 @@ public class Samplegit {
 		// TODO Auto-generated method stub
 		
 		Samplegit g1 = new Samplegit();
-		 
+		
 		System.out.println("Master code open");
 		
-			
+		Vijay();
+		 		
 	}
+	
+	public static void Vijay() {
+		System.out.println("Vijay code open");
+	}
+	
+	
 }
