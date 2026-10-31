@@ -1,0 +1,45 @@
+name: Android staging APK
+
+on:
+  workflow_dispatch:        # "Run workflow" button in the Actions tab
+  push:
+    branches: [staging]     # or push to a branch named "staging"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - run: npm ci
+
+      - name: Build web app (staging Supabase)
+        run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.STAGING_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.STAGING_SUPABASE_ANON_KEY }}
+          VITE_APP_URL: ${{ secrets.STAGING_APP_URL }}
+
+      - run: npx cap sync android
+
+      - name: Build debug APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vedanthika-staging-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30
