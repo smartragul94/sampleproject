@@ -1,9 +1,9 @@
 name: Android staging APK
 
 on:
-  workflow_dispatch:        # "Run workflow" button in the Actions tab
+  workflow_dispatch:
   push:
-    branches: [staging]     # or push to a branch named "staging"
+    branches: [staging]
 
 jobs:
   build:
